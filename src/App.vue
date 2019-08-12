@@ -5,8 +5,37 @@
       <router-link to="/about">About</router-link>
     </div>
     <router-view/>
+    <vue-progress-bar></vue-progress-bar>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'app',
+
+  created(){
+    console.log(this.$api)
+    this.$Progress.start();
+
+    this.$router.beforeEach((to, from, next) => {
+      if(to.meta.progress !== undefined){
+        let meta = to.meta.progress
+        this.$Progress.parseMeta(meta)
+      }
+
+      this.$Progress.start()
+      next()
+    })
+
+    this.$router.afterEach((to, from) => {
+      this.$Progress.finish()
+    })
+  },
+  mounted(){
+    this.$Progress.finish();
+  }
+}
+</script>
 
 <style lang="scss">
 #app {
