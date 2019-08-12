@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <el-menu
-      :default-active="activeIndex"
+      :default-active="active"
       class="el-menu-demo"
       mode="horizontal"
       @select="handleSelect"
@@ -11,37 +11,54 @@
       <el-menu-item index="/"><i class="el-icon-s-home"></i><span>主页</span></el-menu-item>
       <el-menu-item index="/list"><i class="el-icon-tickets"></i><span>分类</span></el-menu-item>
 
-      <el-menu-item class="right" index="/signUp"><span>注册</span></el-menu-item>
-      <el-menu-item class="right" index="3"><span>登录</span></el-menu-item>
-      <el-menu-item class="right" index="6"><span>注销</span></el-menu-item>
-
-      <el-submenu index="5" class="right">
-        <template slot="title"><i class="el-icon-monitor"></i><span>我的工作台</span></template>
-        <el-menu-item index="5-1">个人中心</el-menu-item>
-        <el-menu-item index="5-2">发布文章</el-menu-item>
-        <el-menu-item index="5-3">消息</el-menu-item>
-      </el-submenu>
+      <template v-if="user">
+        <el-menu-item class="right" @click="handleExit"><span>注销</span></el-menu-item>
+        <el-submenu index="5" class="right">
+          <template slot="title"><i class="el-icon-monitor"></i><span>{{user.getUsername()}}</span></template>
+          <el-menu-item index="5-1">个人中心</el-menu-item>
+          <el-menu-item index="5-2">发布文章</el-menu-item>
+          <el-menu-item index="5-3">消息</el-menu-item>
+        </el-submenu>
+      </template>
+      <template v-else>
+        <el-menu-item class="right" index="/signUp"><span>注册</span></el-menu-item>
+        <el-menu-item class="right" index="/signIn"><span>登录</span></el-menu-item>
+      </template>
     </el-menu>
   </div>
 </template>
 <script>
+  import {mapState, mapActions} from 'vuex'
   export default {
     name: 'i-header',
     data() {
       return {
-        activeIndex: '1'
+        active: '/'
       }
     },
+    computed: mapState(['user']),
     created(){
       this.active = this.$route.path; // 解决刷新不高亮
-      this.$router.afterEach((to, form)=>{
+      this.$router.afterEach((to, from)=>{
+        console.log('afterEach-----to')
+        console.log(to.path)
         this.active = to.path;  // 解决编程式切换路由不高亮
       })
     },
     methods: {
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
+        this.$router.push(key)
+      },
+      ...mapActions(['exit']),
+      handleExit(){
+        this.exit();
+        this.$api.SDK.User.logOut();  // SDK的退出
+        this.$message.success('成功退出')
       }
+    },
+    mounted(){
+      console.log(this.user.getUsername())
     }
   }
 </script>

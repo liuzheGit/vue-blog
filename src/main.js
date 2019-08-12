@@ -16,10 +16,6 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI);
 
-const user = api.SDK.User.current();
-if(user) {
-  store.commit('setUser', user)
-}
 
 const VueProgressBaroptions = {
   color: '#bffaf3',
@@ -38,6 +34,11 @@ const VueProgressBaroptions = {
 Vue.use(VueProgressBar, VueProgressBaroptions)
 
 
+const user = api.SDK.User.current();
+window.user = user;
+if(user) {
+  store.commit('setUser', user)
+}
 
 Vue.mixin({
   beforeCreate(){

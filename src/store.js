@@ -5,17 +5,25 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {}
+    user: null
   },
   mutations: {
     setUser(state, user){
       state.user = user;
-      console.log('state------------------')
-      console.log(state.user.username)
     }
-
+  },
+  getters: {
+    uid({user}){
+      if (user) return user.id;
+      return null
+    }
   },
   actions: {
-
+    exit(context){
+      context.commit('setUser', null);
+    },
+    login(context, user){
+      context.commit('setUser', user)
+    }
   }
 })
