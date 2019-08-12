@@ -10,6 +10,11 @@ localStorage.setItem('debug', 'leancloud*')
 // 进度条
 import VueProgressBar from 'vue-progressbar'
 
+// element-ui
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI);
+
 const VueProgressBaroptions = {
   color: '#bffaf3',
   failedColor: '#874b4b',

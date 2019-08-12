@@ -1,8 +1,10 @@
 <template>
   <div id="app">
+    <i-header />
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/about">About</router-link> | 
+      <router-link to="/list">List</router-link>
     </div>
     <router-view/>
     <vue-progress-bar></vue-progress-bar>
@@ -10,9 +12,12 @@
 </template>
 
 <script>
+  import Header from './components/Header'
 export default {
   name: 'app',
-
+  components: {
+    'i-header': Header
+  },
   created(){
     console.log(this.$api)
     this.$Progress.start();
