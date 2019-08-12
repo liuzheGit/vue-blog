@@ -58,7 +58,7 @@
       }
     },
     mounted(){
-      console.log(this.user.getUsername())
+      // console.log(this.user.getUsername())
     }
   }
 </script>

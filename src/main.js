@@ -35,7 +35,7 @@ Vue.use(VueProgressBar, VueProgressBaroptions)
 
 
 const user = api.SDK.User.current();
-window.user = user;
+
 if(user) {
   store.commit('setUser', user)
 }
