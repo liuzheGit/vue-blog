@@ -9,7 +9,9 @@ export default new Vuex.Store({
   },
   mutations: {
     setUser(state, user){
-      state.user = user
+      state.user = user;
+      console.log('state------------------')
+      console.log(state.user.username)
     }
 
   },

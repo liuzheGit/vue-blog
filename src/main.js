@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+
 //  api
 import api from './api'
 localStorage.setItem('debug', 'leancloud*')
@@ -14,6 +15,11 @@ import VueProgressBar from 'vue-progressbar'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI);
+
+const user = api.SDK.User.current();
+if(user) {
+  store.commit('setUser', user)
+}
 
 const VueProgressBaroptions = {
   color: '#bffaf3',
