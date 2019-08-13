@@ -1,10 +1,12 @@
 <template>
   <div class="container">
-    <h3 class="title is-3">发布一篇新的文章</h3>
+    <h3 class="title is-3">编辑文章</h3>
     <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
       <el-form-item label="文章分类" prop="category">
         <el-select v-model="form.category" placeholder="请选择文章分类">
-          <el-option v-for="cate in categories" :key="cate.objectId" :label="cate.get('name')" :value="cate.get('name')">{{ cate.get('name') }}</el-option>
+          <el-option v-for="cate in categories" :key="cate.objectId" :label="cate.get('name')"
+                     :value="cate.get('name')">{{ cate.get('name') }}
+          </el-option>
         </el-select>
       </el-form-item>
 
@@ -19,7 +21,7 @@
           <div v-if="validate.error" class="el-form-item__error">正文怎能没有内容呢？</div>
         </div>
       </div>
-
+      <el-button @click="cleanEditor">清空内容</el-button>
       <div class="oprator right">
         <el-button class="submit" type="primary" @click="submit" @keyup.enter="submit">发布文章</el-button>
       </div>
@@ -29,93 +31,133 @@
 
 <script>
   import {mapState} from 'vuex'
-
   import E from 'wangeditor'
-  let editor = null;
 
+  let editor = null;
   export default {
-    name: "create",
-    data(){
+    name: "edit",
+    data() {
       return {
+        article: null,
         categories: [],
         editorContent: '',
         form: {
           category: '',
-          title: '',
+          title: ''
         },
         rules: {
           title: [
-            { required: true, message: "必须填写标题哦!", trigger: 'blur' },
+            {required: true, message: "必须填写标题哦!", trigger: 'blur'},
           ],
           category: [
-            { type: 'string', required: true, message: "必须填写分类哦!", trigger: 'blur' },
+            {type: 'string', required: true, message: "必须填写分类哦!", trigger: 'blur'},
           ],
 
         },
-
         validate: {
           error: false
         }
       }
     },
-    computed: {
-      ...mapState(['user'])
-    },
     created(){
-      this.getCategories();
+      this.getCategory();
+      this.getArticle()
     },
     mounted(){
       this.initEditor();
     },
+    computed:{
+      ...mapState(['user'])
+    },
     methods: {
       initEditor(){
-        let editor = new E(this.$refs.editor);
+        editor = new E(this.$refs.editor);
         editor.customConfig.onchange = (html) => {
           this.editorContent = html
         };
         editor.create();
       },
-      getCategories(){
+      getCategory(){
         const cq = new this.$api.SDK.Query('Category');
         cq.find().then((categories)=>{
-          this.$Progress.finish();
-          this.categories = categories;
-          // this.form.category = categories[0].get('name')
-        }).catch(error=>console.error(error))
+          this.categories = categories
+        }).catch(err=>console.log(err))
+      },
+      cleanEditor(){
+        editor.txt.clear()
+      },
+      getContent(){
+        return editor.txt.html();
+      },
+      setContent(html){
+        return editor.txt.html(html)
+      },
+      getArticle(){
+        const id = this.$route.params.id;
+        let q = new this.$api.SDK.Query('Article');
+        q.include('category');
+        q.get(id).then((article) => {
+          this.article = article;
+
+          this.form.title = article.get('title');
+          this.form.category = article.get('category');
+
+          this.wait(editor).then(() =>{
+            this.setContent(article.get('content'))
+          });
+
+          this.$Progress.finish()
+        })
+      },
+      wait(flag){
+        console.log('这里是一个promise')
+        return new Promise((resolve,reject)=>{
+          let timer = null;
+          if(flag){
+            resolve()
+          }else {
+            timer = setInterval(()=>{
+              if(!flag) {return;}
+              resolve();
+              clearInterval(timer)
+            },500)
+          }
+        })
       },
       // 验证富文本内容
       validateContent(){
-        if(this.editorContent === ''
-            || this.editorContent === '<p><br></p>'
-            || this.editorContent === '<p>&nbsp;</p>'
-            || this.editorContent === '<p>&nbsp;</p><p><br></p>'
+        let editorContent = this.getContent();
+        if( editorContent === ''
+            || editorContent === '<p><br></p>'
+            || editorContent === '<p>&nbsp;</p>'
+            || editorContent === '<p>&nbsp;</p><p><br></p>'
         ){
           this.validate.error = true;
-          return false
+          return false;
         }
         this.validate.error = false;
-        return true
+        return true;
       },
-      createArticle(){
-        const article = new this.$api.SDK.Object('Article');
+      setArticle(){
+        const article = this.article;
         article.set('author', this.user);
         article.set('title', this.form.title);
-        article.set('content', this.editorContent);
+        article.set('content', this.getContent());
         article.set('category', this.form.category);
-        return article
+        return article;
       },
       save(article){
-        article.save().then((article) => {
-          const message = `文章《${article.get('title')}》发布成功`;
+        article.save().then((article)=>{
+          const message = `文章《${article.get('title')}》修改成功`;
           this.$message({message, type: 'success'});
           this.$router.replace({name: 'ArticleShow', params: {id: article.id}})
-        }).catch(error=>console.log(error))
+        }).catch(err=>console.log(err))
       },
       submit(){
-        this.$refs.form.validate((valid)=>{
+        this.$refs.form.validate((valid) =>{
           if(!this.validateContent()){return }
           if(valid){
-            let article = this.createArticle();
+            const article = this.setArticle();
             this.save(article)
           }else {
             this.$message.error('填写错误,请按照提示修改!');
@@ -127,7 +169,7 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   #editor{
     border: 1px solid transparent;
   }

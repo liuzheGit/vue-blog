@@ -21,7 +21,7 @@ router.beforeEach((to, from, next)=>{
 });
 //  api
 import api from './api'
-localStorage.setItem('debug', 'leancloud*')
+// localStorage.setItem('debug', 'leancloud*')
 
 // 进度条
 import VueProgressBar from 'vue-progressbar'
