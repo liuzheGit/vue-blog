@@ -27,9 +27,9 @@ export default {
       next()
     })
 
-    this.$router.afterEach((to, from) => {
-      this.$Progress.finish()
-    })
+    // this.$router.afterEach((to, from) => {
+    //   this.$Progress.finish()
+    // })
   },
   mounted(){
     this.$Progress.finish();

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 
-import List from '@/components/List'
+import ArticleList from '@/components/List'
 import SignIn from '@/views/SignIn'
 import SignUp from '@/views/SignUp'
 import ArticleCreate from '@/views/article/create'
@@ -17,9 +17,9 @@ export default new Router({
       component: Home
     },
     {
-      path: '/list',
-      name: 'List',
-      component: List
+      path: '/article',
+      name: 'ArticleList',
+      component: ArticleList
     },
     {
       path: '/signUp',

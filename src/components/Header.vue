@@ -9,13 +9,13 @@
       text-color="#fff"
       active-text-color="#ffd04b">
       <el-menu-item index="/"><i class="el-icon-s-home"></i><span>主页</span></el-menu-item>
-      <el-menu-item index="/list"><i class="el-icon-tickets"></i><span>分类</span></el-menu-item>
+      <el-menu-item index="/article?type=all"><i class="el-icon-tickets"></i><span>分类</span></el-menu-item>
 
       <template v-if="user">
         <el-menu-item class="right" @click="handleExit"><span>注销</span></el-menu-item>
         <el-submenu index="5" class="right">
           <template slot="title"><i class="el-icon-monitor"></i><span>{{user.getUsername()}}</span></template>
-          <el-menu-item index="5-1">个人中心</el-menu-item>
+          <el-menu-item index="/article?type=me">我的文章</el-menu-item>
           <el-menu-item index="/article/create">发布文章</el-menu-item>
           <el-menu-item index="5-3">消息</el-menu-item>
         </el-submenu>
