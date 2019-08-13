@@ -6,7 +6,7 @@
         <article v-for="article in articles">
           <h3>
             <router-link :to="{name: 'ArticleShow', params: {id: article.id}}">
-              {{article.get('title')}}
+              {{article.get('title')}} - {{article.get('objectId')}}
             </router-link>
           </h3>
         </article>
@@ -25,12 +25,12 @@
         articles: []
       }
     },
-    create(){
+    created(){
       this.match();
     },
     watch: {
       ['$route.query'](){
-        console.log('render');
+        console.log('list 路由改变重新渲染列表');
         this.articles = [];
         this.match()
       }
@@ -48,7 +48,7 @@
             this.getAllArticles();
             break;
           default:
-            this.getCategories(flag)
+            this.getCategoryArticle(flag)
         }
       },
       query(){
@@ -79,6 +79,15 @@
       getMyArticles(){
         this.title = '我的文章';
         const q = this.query();
+        this.setArticles(q)
+      },
+      getCagegoryObj(id){
+        return this.$api.SDK.Object.createWidthoutData('Category', id)
+      },
+      getCategoryArticle(cid) {
+        let cateObj = this.getCagegoryObj(cid)
+        const q = this.query();
+        q.equalTo('category', cateObj)
         this.setArticles(q)
       }
     }

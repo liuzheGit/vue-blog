@@ -76,6 +76,7 @@
       getCategories(){
         const cq = new this.$api.SDK.Query('Category');
         cq.find().then((categories)=>{
+          this.$Progress.finish();
           this.categories = categories;
           // this.form.category = categories[0].get('name')
         }).catch(error=>console.error(error))
@@ -102,8 +103,9 @@
       },
       save(article){
         article.save().then((article) => {
-          const message = `文章《${article.get('title')}》发布成功`
-          this.$message({message, type: 'success'})
+          const message = `文章《${article.get('title')}》发布成功`;
+          this.$message({message, type: 'success'});
+          this.$router.replace({name: 'ArticleShow', params: {id: article.id}})
         }).catch(error=>console.log(error))
       },
       submit(){

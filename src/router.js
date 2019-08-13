@@ -6,6 +6,7 @@ import ArticleList from '@/components/List'
 import SignIn from '@/views/SignIn'
 import SignUp from '@/views/SignUp'
 import ArticleCreate from '@/views/article/create'
+import ArticleShow from '@/views/article/index'
 
 Vue.use(Router)
 
@@ -38,6 +39,11 @@ export default new Router({
       meta: {
         needLogin: true
       }
+    },
+    {
+      path: '/article/:id',
+      name: 'ArticleShow',
+      component: ArticleShow
     }
   ]
 })
