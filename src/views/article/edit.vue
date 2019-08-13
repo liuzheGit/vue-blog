@@ -21,7 +21,6 @@
           <div v-if="validate.error" class="el-form-item__error">正文怎能没有内容呢？</div>
         </div>
       </div>
-      <el-button @click="cleanEditor">清空内容</el-button>
       <div class="oprator right">
         <el-button class="submit" type="primary" @click="submit" @keyup.enter="submit">发布文章</el-button>
       </div>
@@ -82,9 +81,6 @@
         cq.find().then((categories)=>{
           this.categories = categories
         }).catch(err=>console.log(err))
-      },
-      cleanEditor(){
-        editor.txt.clear()
       },
       getContent(){
         return editor.txt.html();
