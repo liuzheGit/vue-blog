@@ -15,7 +15,6 @@ export default {
     'i-header': Header
   },
   created(){
-    console.log(this.$api)
     this.$Progress.start();
 
     this.$router.beforeEach((to, from, next) => {

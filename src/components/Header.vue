@@ -40,14 +40,14 @@
     created(){
       this.active = this.$route.path; // 解决刷新不高亮
       this.$router.afterEach((to, from)=>{
-        console.log('afterEach-----to')
-        console.log(to.path)
+        // console.log('afterEach-----to')
+        // console.log(to.path)
         this.active = to.path;  // 解决编程式切换路由不高亮
       })
     },
     methods: {
       handleSelect(key, keyPath) {
-        console.log(key, keyPath);
+        // console.log(key, keyPath);
         this.$router.push(key)
       },
       ...mapActions(['exit']),

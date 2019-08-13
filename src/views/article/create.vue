@@ -4,7 +4,7 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
       <el-form-item label="文章分类" prop="category">
         <el-select v-model="form.category" placeholder="请选择文章分类">
-          <el-option v-for="cate in categories" :key="cate.objectId" :label="cate.get('name')" :value="cate">{{ cate.get('name') }}</el-option>
+          <el-option v-for="cate in categories" :key="cate.objectId" :label="cate.get('name')" :value="cate.get('name')">{{ cate.get('name') }}</el-option>
         </el-select>
       </el-form-item>
 
@@ -15,7 +15,7 @@
       <div class="el-form-item is-required" :class="{ 'is-error': validate.error }">
         <label class="el-form-item__label">文章内容</label>
         <div class="el-form-item__content">
-          <div id="editor" ref="editor"></div>
+          <div id="editor" ref="editor" :class="{'error-border': validate.error}"></div>
           <div v-if="validate.error" class="el-form-item__error">正文怎能没有内容呢？</div>
         </div>
       </div>
@@ -41,7 +41,7 @@
         categories: [],
         editorContent: '',
         form: {
-          category: null,
+          category: '',
           title: '',
         },
         rules: {
@@ -49,7 +49,7 @@
             { required: true, message: "必须填写标题哦!", trigger: 'blur' },
           ],
           category: [
-            { type: 'object', required: true, message: "必须填写分类哦!", trigger: 'blur' },
+            { type: 'string', required: true, message: "必须填写分类哦!", trigger: 'blur' },
           ],
 
         },
@@ -63,30 +63,70 @@
       this.getCategories();
     },
     mounted(){
-      let editor = new E(this.$refs.editor);
-      editor.customConfig.onchange = (html) => {
-        this.editorContent = html
-      }
-      editor.create();
+      this.initEditor();
     },
     methods: {
+      initEditor(){
+        let editor = new E(this.$refs.editor);
+        editor.customConfig.onchange = (html) => {
+          this.editorContent = html
+        };
+        editor.create();
+      },
       getCategories(){
         const cq = new this.$api.SDK.Query('Category');
         cq.find().then((categories)=>{
           this.categories = categories;
-          this.form.category = categories[0]
+          // this.form.category = categories[0].get('name')
         }).catch(error=>console.error(error))
       },
-      getEditorContent(){
-        console.log(this.editorContent)
+      // 验证富文本内容
+      validateContent(){
+        if(this.editorContent === ''
+            || this.editorContent === '<p><br></p>'
+            || this.editorContent === '<p>&nbsp;</p>'
+            || this.editorContent === '<p>&nbsp;</p><p><br></p>'
+        ){
+          this.validate.error = true;
+          return false
+        }
+        this.validate.error = false;
+      },
+      createArticle(){
+        const article = new this.$api.SDK.Object('Article');
+        article.set('author', this.user);
+        article.set('title', this.form.title);
+        article.set('content', this.editorContent);
+        article.set('category', this.form.category)
+        return article
+      },
+      save(article){
+        article.save().then((article) => {
+          const message = `文章《${article.get('title')}》发布成功`
+          this.$message({message, type: 'success'})
+        }).catch(error=>console.log(error))
       },
       submit(){
-
+        this.$refs.form.validate((valid)=>{
+          this.validateContent();
+          if(valid){
+            let article = this.createArticle();
+            this.save(article)
+          }else {
+            this.$message.error('填写错误,请按照提示修改!');
+            return false;
+          }
+        })
       }
     }
   }
 </script>
 
 <style scoped>
-
+  #editor{
+    border: 1px solid transparent;
+  }
+  #editor.error-border{
+    border: 1px solid red;
+  }
 </style>
