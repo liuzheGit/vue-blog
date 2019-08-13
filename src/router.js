@@ -5,7 +5,7 @@ import Home from './views/Home.vue'
 import List from '@/components/List'
 import SignIn from '@/views/SignIn'
 import SignUp from '@/views/SignUp'
-import Create from '@/views/article/create'
+import ArticleCreate from '@/views/article/create'
 
 Vue.use(Router)
 
@@ -32,9 +32,12 @@ export default new Router({
       component: SignIn
     },
     {
-      path: '/create',
-      name: 'create',
-      component: Create
+      path: '/article/create',
+      name: 'ArticleCreate',
+      component: ArticleCreate,
+      meta: {
+        needLogin: true
+      }
     }
   ]
 })

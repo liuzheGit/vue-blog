@@ -2,8 +2,23 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import '@/assets/global.css'
 
-
+// 路由限制
+router.beforeEach((to, from, next)=>{
+  if(to.matched.some(record => record.meta.needLogin)){
+    if(!store.state.user){
+      Vue.prototype.$message.error('请先登录')
+      next({
+        path: '/signIn'
+      })
+    }else {
+      next()
+    }
+  }else {
+    next()
+  }
+});
 //  api
 import api from './api'
 localStorage.setItem('debug', 'leancloud*')
@@ -50,7 +65,7 @@ Vue.mixin({
 
 Vue.config.productionTip = false
 
-new Vue({
+const app = new Vue({
   router,
   store,
   render: h => h(App)

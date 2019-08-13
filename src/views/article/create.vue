@@ -12,7 +12,7 @@
         <el-input v-model="form.title" placeholder="请输入文章标题"></el-input>
       </el-form-item>
 
-      <div class="el-form-item is-required" :class="{ 'is-error': validate.error }">
+      <div class="el-form-item is-required item-editor" :class="{ 'is-error': validate.error }">
         <label class="el-form-item__label">文章内容</label>
         <div class="el-form-item__content">
           <div id="editor" ref="editor" :class="{'error-border': validate.error}"></div>
@@ -128,5 +128,9 @@
   }
   #editor.error-border{
     border: 1px solid red;
+  }
+  .item-editor{
+    position: relative;
+    z-index: 200;
   }
 </style>

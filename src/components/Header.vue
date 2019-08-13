@@ -16,7 +16,7 @@
         <el-submenu index="5" class="right">
           <template slot="title"><i class="el-icon-monitor"></i><span>{{user.getUsername()}}</span></template>
           <el-menu-item index="5-1">个人中心</el-menu-item>
-          <el-menu-item index="/create">发布文章</el-menu-item>
+          <el-menu-item index="/article/create">发布文章</el-menu-item>
           <el-menu-item index="5-3">消息</el-menu-item>
         </el-submenu>
       </template>

@@ -1,5 +1,5 @@
 <template>
-  <div class="test">
+  <div class="test container">
     <el-select v-model="form.category" placeholder="请选择">
       <el-option
         v-for="item in categories"
