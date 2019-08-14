@@ -13,7 +13,7 @@
       <el-menu-item index="/article"><i class="el-icon-tickets"></i><span>列表</span></el-menu-item>
 
       <template v-if="user">
-        <el-menu-item index="/exit" class="right" @click="handleExit"><span>注销</span></el-menu-item>
+        <el-menu-item index="#" class="right" @click="handleExit"><span>注销</span></el-menu-item>
         <el-submenu index="5" class="right">
           <template slot="title"><i class="el-icon-monitor"></i><span>{{user.getUsername()}}</span></template>
           <el-menu-item>
@@ -62,10 +62,10 @@
       },
       ...mapActions(['exit']),
       handleExit(){
+        this.$router.push('/');
         this.exit();
         this.$api.SDK.User.logOut();  // SDK的退出
         this.$message.success('成功退出')
-        this.$router.go('/');
         this.active = '/'
       }
     },

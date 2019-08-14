@@ -21,18 +21,18 @@
       }
     },
     created(){
-      // const id = this.$route.params.id;
-      this.getArticle()
+      const id = this.$route.params.id;
+      this.getArticle(id)
     },
     computed:{
       ...mapGetters(['uid'])
     },
     methods: {
-      getArticle: function () {
+      getArticle: function (id) {
         const q = new this.$api.SDK.Query('Article');
         q.include('author');
         q.include('category');
-        q.get().then((article) => {
+        q.get(id).then((article) => {
           this.article = article;
           this.$Progress.finish();
         }).catch(err=>console.log(err))
