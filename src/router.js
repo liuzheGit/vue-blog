@@ -47,7 +47,7 @@ export default new Router({
       }
     },
     {
-      path: '/article/:id',
+      path: '/article',
       name: 'ArticleShow',
       component: ArticleShow
     },

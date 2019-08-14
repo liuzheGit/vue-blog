@@ -2,6 +2,7 @@
   <div class="container">
     <el-menu
       :default-active="active"
+      :router="true"
       class="el-menu-header"
       mode="horizontal"
       @select="handleSelect"
@@ -12,7 +13,7 @@
       <el-menu-item index="/article?type=all"><i class="el-icon-tickets"></i><span>分类</span></el-menu-item>
 
       <template v-if="user">
-        <el-menu-item class="right" @click="handleExit"><span>注销</span></el-menu-item>
+        <el-menu-item index="6" class="right" @click="handleExit"><span>注销</span></el-menu-item>
         <el-submenu index="5" class="right">
           <template slot="title"><i class="el-icon-monitor"></i><span>{{user.getUsername()}}</span></template>
           <el-menu-item>
@@ -49,19 +50,22 @@
         // console.log('afterEach-----to')
         // console.log(to.path)
         this.active = to.path;  // 解决编程式切换路由不高亮
+        console.log('========================')
+        console.log(this.active)
+
       })
     },
     methods: {
       handleSelect(key, keyPath) {
-        console.log('路由的key')
-        console.log(key);
-        // this.$router.push(key)
+        // console.log('路由的key')
+        // console.log(key);
       },
       ...mapActions(['exit']),
       handleExit(){
         this.exit();
         this.$api.SDK.User.logOut();  // SDK的退出
         this.$message.success('成功退出')
+        this.$router.go('/')
       }
     },
     mounted(){

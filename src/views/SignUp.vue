@@ -33,6 +33,9 @@
 <script>
   export default {
     name: "SignUp",
+    mounted(){
+      this.$Progress.finish()
+    },
     data(){
       let validatePass = (rule, value, callback) => {
         if(value === ''){

@@ -14,25 +14,25 @@
 <script>
   import {mapGetters} from 'vuex'
   export default {
-    name: "Myarticle",
+    name: "MyArticle",
     data(){
       return {
         article: null
       }
     },
     created(){
-      const id = this.$route.params.id;
-      this.getArticle(id)
+      // const id = this.$route.params.id;
+      this.getArticle()
     },
     computed:{
       ...mapGetters(['uid'])
     },
     methods: {
-      getArticle: function (id) {
+      getArticle: function () {
         const q = new this.$api.SDK.Query('Article');
         q.include('author');
         q.include('category');
-        q.get(id).then((article) => {
+        q.get().then((article) => {
           this.article = article;
           this.$Progress.finish();
         }).catch(err=>console.log(err))

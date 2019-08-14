@@ -12,6 +12,9 @@ export default {
   name: 'home',
   components: {
     Test
+  },
+  mounted(){
+    this.$Progress.finish()
   }
 }
 </script>

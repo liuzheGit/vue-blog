@@ -44,6 +44,9 @@
         }
       }
     },
+    mounted(){
+      this.$Progress.finish()
+    },
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {

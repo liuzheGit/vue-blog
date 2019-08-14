@@ -6,6 +6,8 @@ import '@/assets/global.css'
 
 // 路由限制
 router.beforeEach((to, from, next)=>{
+  // console.log('路由限制是')
+  // console.log(to)
   if(to.matched.some(record => record.meta.needLogin)){
     if(!store.state.user){
       Vue.prototype.$message.error('请先登录')
