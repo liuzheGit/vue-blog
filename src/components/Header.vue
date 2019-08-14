@@ -2,7 +2,7 @@
   <div class="container">
     <el-menu
       :default-active="active"
-      class="el-menu-demo"
+      class="el-menu-header"
       mode="horizontal"
       @select="handleSelect"
       background-color="#545c64"
@@ -15,6 +15,9 @@
         <el-menu-item class="right" @click="handleExit"><span>注销</span></el-menu-item>
         <el-submenu index="5" class="right">
           <template slot="title"><i class="el-icon-monitor"></i><span>{{user.getUsername()}}</span></template>
+          <el-menu-item>
+            <router-link :to="{name: 'User', params: {id: user.id}}">我的主页</router-link>
+          </el-menu-item>
           <el-menu-item index="/article?type=me">我的文章</el-menu-item>
           <el-menu-item index="/article/create">发布文章</el-menu-item>
           <el-menu-item index="5-1">消息</el-menu-item>
@@ -47,7 +50,8 @@
     },
     methods: {
       handleSelect(key, keyPath) {
-        // console.log(key, keyPath);
+        console.log('路由的key')
+        console.log(key);
         this.$router.push(key)
       },
       ...mapActions(['exit']),
@@ -67,4 +71,7 @@
   .el-menu--horizontal > .el-menu-item.right, .el-submenu.right {
     float: right;
   }
+
+  a{ color: #fff; text-decoration: none; }
+  a:visited{ color: #fff; }
 </style>

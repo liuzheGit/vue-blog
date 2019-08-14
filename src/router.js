@@ -8,6 +8,7 @@ import SignUp from '@/views/SignUp'
 import ArticleCreate from '@/views/article/create'
 import ArticleShow from '@/views/article/index'
 import ArticleEdit from '@/views/article/edit'
+import User from '@/views/user/index'
 
 Vue.use(Router)
 
@@ -53,6 +54,11 @@ export default new Router({
       meta: {
         needLogin: true
       }
+    },
+    {
+      path: '/user/:id',
+      name: 'User',
+      component: User
     }
   ]
 })

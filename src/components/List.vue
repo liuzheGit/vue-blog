@@ -6,8 +6,10 @@
         <article v-for="article in articles">
           <h3>
             <router-link :to="{name: 'ArticleShow', params: {id: article.id}}">
-              {{article.get('title')}} - {{article.get('objectId')}}
+              {{article.get('title')}}
             </router-link>
+            |
+            <router-link :to="{name: 'User', params: {id: article.get('author').id}}">{{article.get('author').get('username')}}</router-link>
           </h3>
         </article>
       </el-main>
