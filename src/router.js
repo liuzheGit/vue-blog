@@ -11,6 +11,8 @@ import ArticleEdit from '@/views/article/edit'
 import User from '@/views/user/index'
 import Followee from '@/views/user/myFollowee'
 import Follower from '@/views/user/myFollower'
+import Message from '@/views/user/message'
+import Friend from '@/views/user/friend'
 
 Vue.use(Router)
 
@@ -74,6 +76,22 @@ export default new Router({
       path: '/follower',
       name: 'Follower',
       component: Follower,
+      meta: {
+        needLogin: true
+      }
+    },
+    {
+      path: '/message',
+      name: 'Message',
+      component: Message,
+      meta: {
+        needLogin: true
+      }
+    },
+    {
+      path: '/friend',
+      name: 'Friend',
+      component: Friend,
       meta: {
         needLogin: true
       }

@@ -4,7 +4,9 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
       <el-form-item label="文章分类" prop="category">
         <el-select v-model="form.category" placeholder="请选择文章分类">
-          <el-option v-for="cate in categories" :key="cate.objectId" :label="cate.get('name')" :value="cate.get('name')">{{ cate.get('name') }}</el-option>
+          <el-option v-for="cate in categories" :key="cate.objectId" :label="cate.get('name')"
+                     :value="cate.get('name')">{{ cate.get('name') }}
+          </el-option>
         </el-select>
       </el-form-item>
 
@@ -31,11 +33,12 @@
   import {mapState} from 'vuex'
 
   import E from 'wangeditor'
+
   let editor = null;
 
   export default {
     name: "create",
-    data(){
+    data() {
       return {
         categories: [],
         editorContent: '',
@@ -45,10 +48,10 @@
         },
         rules: {
           title: [
-            { required: true, message: "必须填写标题哦!", trigger: 'blur' },
+            {required: true, message: "必须填写标题哦!", trigger: 'blur'},
           ],
           category: [
-            { type: 'string', required: true, message: "必须填写分类哦!", trigger: 'blur' },
+            {type: 'string', required: true, message: "必须填写分类哦!", trigger: 'blur'},
           ],
 
         },
@@ -61,42 +64,42 @@
     computed: {
       ...mapState(['user'])
     },
-    created(){
+    created() {
       this.getCategories();
     },
-    mounted(){
+    mounted() {
       this.initEditor();
     },
     methods: {
-      initEditor(){
+      initEditor() {
         let editor = new E(this.$refs.editor);
         editor.customConfig.onchange = (html) => {
           this.editorContent = html
         };
         editor.create();
       },
-      getCategories(){
+      getCategories() {
         const cq = new this.$api.SDK.Query('Category');
-        cq.find().then((categories)=>{
+        cq.find().then((categories) => {
           this.$Progress.finish();
           this.categories = categories;
           // this.form.category = categories[0].get('name')
-        }).catch(error=>console.error(error))
+        }).catch(error => console.error(error))
       },
       // 验证富文本内容
-      validateContent(){
-        if(this.editorContent === ''
+      validateContent() {
+        if (this.editorContent === ''
             || this.editorContent === '<p><br></p>'
             || this.editorContent === '<p>&nbsp;</p>'
             || this.editorContent === '<p>&nbsp;</p><p><br></p>'
-        ){
+        ) {
           this.validate.error = true;
           return false
         }
         this.validate.error = false;
         return true
       },
-      createArticle(){
+      createArticle() {
         const article = new this.$api.SDK.Object('Article');
         article.set('author', this.user);
         article.set('title', this.form.title);
@@ -104,20 +107,47 @@
         article.set('category', this.form.category);
         return article
       },
-      save(article){
+
+      setACL(article) {
+        // 设置访问权限
+        // https://leancloud.cn/docs/acl-guide.html#单用户权限设置
+        let acl = new this.$api.SDK.ACL();
+        acl.setPublicReadAccess(true);
+        acl.setWriteAccess(this.user, true);
+        article.setACL(acl);
+      },
+      save(article) {
         article.save().then((article) => {
+          console.log('=====================')
+          console.log(article)
           const message = `文章《${article.get('title')}》发布成功`;
+
+          const status = new this.$api.SDK.Status();
+          status.inboxType = 'friend';
+          status.set('title', article.get('title'));
+          status.set('type', 'create_article');
+          status.set('article', article);
+
+          // 发送朋友圈消息
+          this.$api.SDK.Status.sendStatusToFollowers(status).then((status) => {
+            console.log('发朋友圈成功')
+          }).catch(err => console.log(err));
+
+
           this.$message({message, type: 'success'});
           this.$router.replace({name: 'ArticleShow', params: {id: article.id}})
-        }).catch(error=>console.log(error))
+        }).catch(error => console.log(error))
       },
-      submit(){
-        this.$refs.form.validate((valid)=>{
-          if(!this.validateContent()){return }
-          if(valid){
+      submit() {
+        this.$refs.form.validate((valid) => {
+          if (!this.validateContent()) {
+            return
+          }
+          if (valid) {
             let article = this.createArticle();
+            this.setACL(article)
             this.save(article)
-          }else {
+          } else {
             this.$message.error('填写错误,请按照提示修改!');
             return false;
           }
@@ -128,13 +158,15 @@
 </script>
 
 <style scoped>
-  #editor{
+  #editor {
     border: 1px solid transparent;
   }
-  #editor.error-border{
+
+  #editor.error-border {
     border: 1px solid red;
   }
-  .item-editor{
+
+  .item-editor {
     position: relative;
     z-index: 200;
   }
