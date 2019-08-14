@@ -14,7 +14,7 @@
 <script>
   import {mapGetters} from 'vuex'
   export default {
-    name: "article",
+    name: "Myarticle",
     data(){
       return {
         article: null

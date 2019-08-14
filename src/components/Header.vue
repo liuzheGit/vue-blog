@@ -55,7 +55,7 @@
       handleSelect(key, keyPath) {
         console.log('路由的key')
         console.log(key);
-        this.$router.push(key)
+        // this.$router.push(key)
       },
       ...mapActions(['exit']),
       handleExit(){
