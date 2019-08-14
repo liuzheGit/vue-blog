@@ -10,17 +10,17 @@
       text-color="#fff"
       active-text-color="#ffd04b">
       <el-menu-item index="/"><i class="el-icon-s-home"></i><span>主页</span></el-menu-item>
-      <el-menu-item index="/article?type=all"><i class="el-icon-tickets"></i><span>分类</span></el-menu-item>
+      <el-menu-item index="/article"><i class="el-icon-tickets"></i><span>列表</span></el-menu-item>
 
       <template v-if="user">
-        <el-menu-item index="6" class="right" @click="handleExit"><span>注销</span></el-menu-item>
+        <el-menu-item index="/exit" class="right" @click="handleExit"><span>注销</span></el-menu-item>
         <el-submenu index="5" class="right">
           <template slot="title"><i class="el-icon-monitor"></i><span>{{user.getUsername()}}</span></template>
           <el-menu-item>
             <router-link :to="{name: 'User', params: {id: user.id}}">我的主页</router-link>
           </el-menu-item>
           <el-menu-item index="/friend">我的朋友圈</el-menu-item>
-          <el-menu-item index="/article?type=me">我的文章</el-menu-item>
+<!--          <el-menu-item index="/article?type=me">我的文章</el-menu-item>-->
           <el-menu-item index="/article/create">发布文章</el-menu-item>
           <el-menu-item index="/followee">我的关注</el-menu-item>
           <el-menu-item index="/follower">我的粉丝</el-menu-item>
@@ -65,7 +65,8 @@
         this.exit();
         this.$api.SDK.User.logOut();  // SDK的退出
         this.$message.success('成功退出')
-        this.$router.go('/')
+        this.$router.go('/');
+        this.active = '/'
       }
     },
     mounted(){

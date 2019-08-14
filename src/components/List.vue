@@ -28,31 +28,32 @@
       }
     },
     created(){
-      this.match();
+      // this.match();
+      this.getAllArticles();
     },
-    watch: {
-      ['$route.query'](){
-        console.log('list 路由改变重新渲染列表');
-        this.articles = [];
-        this.match()
-      }
-    },
+    // watch: {
+    //   ['$route.query'](){
+    //     console.log('list 路由改变重新渲染列表');
+    //     this.articles = [];
+    //     this.match()
+    //   }
+    // },
     computed: mapState(['user']),
     methods: {
-      match(){
-        let flag = this.$route.query.type || this.$route.query.cid;
-        this.$Progress.start();
-        switch (flag) {
-          case 'me':
-            this.getMyArticles();
-            break;
-          case 'all':
-            this.getAllArticles();
-            break;
-          default:
-            this.getCategoryArticle(flag)
-        }
-      },
+      // match(){
+      //   let flag = this.$route.query.type || this.$route.query.cid;
+      //   this.$Progress.start();
+      //   switch (flag) {
+      //     case 'me':
+      //       this.getMyArticles();
+      //       break;
+      //     case 'all':
+      //       this.getAllArticles();
+      //       break;
+      //     default:
+      //       this.getCategoryArticle(flag)
+      //   }
+      // },
       query(){
         let q = new this.$api.SDK.Query('Article');
         q.include('category');
