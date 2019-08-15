@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>登录</h1>
+    <div class="page-header">登录</div>
     <div class="form-panel">
       <el-form
         :label-position="labelPosition"
@@ -72,5 +72,14 @@
 </script>
 
 <style scoped lang="scss">
-
+  .page-header{
+    margin-top: 50px;
+  }
+  .form-panel{
+    width: 600px;
+    margin: 50px auto 0;
+  }
+  .operator{
+    text-align: center;
+  }
 </style>
