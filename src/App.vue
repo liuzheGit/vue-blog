@@ -50,6 +50,7 @@ export default {
     flex-direction: column;
     main{
       flex-grow: 1;
+      padding: 5px;
     }
     footer{
       line-height: 50px;

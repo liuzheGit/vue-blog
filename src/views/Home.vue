@@ -20,12 +20,12 @@
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
   axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
   axios.defaults.transformRequest = [function (data) {
-      let ret = ''
+      let ret = '';
       for (let it in data) {
         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
       }
       return ret
-  }]
+  }];
   import Test from '@/components/Test'
   // @ is an alias to /src
 

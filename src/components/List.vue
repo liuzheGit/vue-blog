@@ -1,16 +1,18 @@
 <template>
   <div class="container">
     <el-container>
-      <el-header> <h1>{{title}}</h1> </el-header>
-      <el-main>
-        <article v-for="article in articles">
-          <h3>
-            <router-link :to="{name: 'ArticleShow', params: {id: article.id}}">
-              {{article.get('title')}}
-            </router-link>
-            |
-            <router-link :to="{name: 'User', params: {id: article.get('author').id}}">{{article.get('author').get('username')}}</router-link>
-          </h3>
+      <el-header class="page-header">
+        所有文章
+      </el-header>
+      <el-main class="list-main">
+        <article v-for="article in articles" class="list-item">
+          <router-link  class="item-user" :to="{name: 'User', params: {id: article.get('author').id}}">
+            <div class="avatar"></div>
+            {{article.get('author').get('username')}}
+          </router-link>
+          <router-link :to="{name: 'ArticleShow', params: {id: article.id}}">
+            {{article.get('title')}}
+          </router-link>
         </article>
       </el-main>
     </el-container>
@@ -23,37 +25,18 @@
     name: 'List',
     data(){
       return {
-        title: '',
         articles: []
       }
     },
     created(){
-      // this.match();
       this.getAllArticles();
     },
-    // watch: {
-    //   ['$route.query'](){
-    //     console.log('list 路由改变重新渲染列表');
-    //     this.articles = [];
-    //     this.match()
-    //   }
-    // },
     computed: mapState(['user']),
     methods: {
-      // match(){
-      //   let flag = this.$route.query.type || this.$route.query.cid;
-      //   this.$Progress.start();
-      //   switch (flag) {
-      //     case 'me':
-      //       this.getMyArticles();
-      //       break;
-      //     case 'all':
-      //       this.getAllArticles();
-      //       break;
-      //     default:
-      //       this.getCategoryArticle(flag)
-      //   }
-      // },
+      getAllArticles(){
+        const q = this.query();
+        this.setArticles(q)
+      },
       query(){
         let q = new this.$api.SDK.Query('Article');
         q.include('category');
@@ -73,25 +56,6 @@
       fail(error){
         this.$message.error(error);
         this.$Progress.fail();
-      },
-      getAllArticles(){
-        this.title = '所有文章';
-        const q = this.query();
-        this.setArticles(q)
-      },
-      getMyArticles(){
-        this.title = '我的文章';
-        const q = this.query();
-        this.setArticles(q)
-      },
-      getCagegoryObj(id){
-        return this.$api.SDK.Object.createWidthoutData('Category', id)
-      },
-      getCategoryArticle(cid) {
-        let cateObj = this.getCagegoryObj(cid)
-        const q = this.query();
-        q.equalTo('category', cateObj)
-        this.setArticles(q)
       }
     }
   }
@@ -99,5 +63,26 @@
 
 
 <style lang="scss" scoped>
-
+  .list-item{
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px dashed #333;
+    &:last-child{
+      border-bottom: none;
+    }
+    .item-user{
+      padding: 4px;
+      margin-right: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .avatar{
+        width: 30px;
+        height: 30px;
+        background: #888;
+      }
+    }
+  }
 </style>

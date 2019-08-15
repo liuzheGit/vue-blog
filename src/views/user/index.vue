@@ -1,6 +1,8 @@
 <template>
   <div class="container" v-if="current_user">
-    <h3>{{current_user.get('username')}}</h3>
+    <el-header class="page-header">
+      {{current_user.get('username')}}
+    </el-header>
     <hr>
     <div class="operator" v-if="user">
       <el-button v-if="user.id !== current_user.id" @click="toggleFollow">{{followed ? '取消关注' : '关注'}}该用户</el-button>
@@ -125,5 +127,13 @@
 </script>
 
 <style scoped lang="scss">
-
+  .operator{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    button{
+      margin: 0 10px;
+    }
+  }
 </style>

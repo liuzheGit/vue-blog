@@ -1,5 +1,8 @@
 <template>
     <div class="container">
+    <el-header class="page-header">
+      我的朋友圈
+    </el-header>
     <ul v-if="statuses.length">
       <li v-for="status in statuses">
         <router-link :to="{name:'User', params: { id: status.get('source').id  }}">{{ status.get('source').get('username') }}</router-link> 在 {{ status.createdAt }}

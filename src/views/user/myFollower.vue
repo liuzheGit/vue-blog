@@ -1,6 +1,8 @@
 <template>
   <div class="container">
-    <h2>我的粉丝</h2>
+    <el-header class="page-header">
+      我的粉丝
+    </el-header>
     <ul v-if="followers.length">
       <li v-for="followee in followers" > <router-link :to="{ name: 'User', params: { id: followee.id } }">{{ followee.get('username') }}</router-link></li>
     </ul>

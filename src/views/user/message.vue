@@ -1,6 +1,8 @@
 <template>
   <div class="container">
-    <h2>我的消息</h2>
+    <el-header class="page-header">
+      我的消息
+    </el-header>
     <ul v-if="messages.length">
       <li v-for="(message, index) in messages">
         <router-link :to="{ name: 'User', params: { id: message.get('from').id } }">{{
