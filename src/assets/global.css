@@ -5,4 +5,5 @@
 }
 .container{
   padding: 0 10%;
+  min-width: 1000px;
 }

@@ -1,8 +1,14 @@
 <template>
   <div id="app">
-    <i-header />
-    <router-view/>
-
+    <header>
+      <i-header />
+    </header>
+    <main>
+      <router-view/>
+    </main>
+    <footer>
+      design by lttztt
+    </footer>
     <vue-progress-bar></vue-progress-bar>
   </div>
 </template>
@@ -38,4 +44,17 @@ export default {
 </script>
 
 <style lang="scss">
+  #app{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    main{
+      flex-grow: 1;
+    }
+    footer{
+      line-height: 50px;
+      background: #d7d7d7;
+      text-align: center;
+    }
+  }
 </style>
