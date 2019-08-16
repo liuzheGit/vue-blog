@@ -95,7 +95,7 @@
 
             user.signUp().then((loginUser) =>{
               this.$store.commit('setUser', loginUser);
-              this.$router.go(-1);
+              this.$router.replace('/');
               this.$message.success('注册成功!')
             }).catch(error =>{
               console.error(error);

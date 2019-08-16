@@ -91,5 +91,15 @@
       width: 500px;
       float: left;
     }
+    .word{
+      line-height: 50px;
+      width: 500px;
+      margin-left: 600px;
+      padding: 30px;
+    }
+    .right{
+      float: right;
+      line-height: 30px;
+    }
   }
 </style>

@@ -7,7 +7,7 @@
       <router-view/>
     </main>
     <footer>
-      design by lttztt
+      &copy;<span>design by lttztt</span>
     </footer>
     <vue-progress-bar></vue-progress-bar>
   </div>
