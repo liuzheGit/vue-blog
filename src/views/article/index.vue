@@ -6,13 +6,15 @@
         <router-link :to="{ name:'ArticleEdit',params: {id: article.id} }" class="el-button el-button--info" tag="button" round>修改</router-link>
         <el-button @click="articleDestroy">删除</el-button>
       </div>
-      <div class="content" v-html="article.get('content')"></div>
+      <div class="content markdown-body" v-html="getContent"></div>
     </template>
   </div>
 </template>
 
 <script>
+  import 'github-markdown-css'
   import {mapGetters} from 'vuex'
+  import marked from 'marked'
   export default {
     name: "MyArticle",
     data(){
@@ -25,7 +27,10 @@
       this.getArticle(id)
     },
     computed:{
-      ...mapGetters(['uid'])
+      ...mapGetters(['uid']),
+      getContent(){
+        return marked(this.article.get('content'))
+      }
     },
     methods: {
       getArticle: function (id) {
@@ -48,5 +53,16 @@
 </script>
 
 <style scoped lang="scss">
-
+  .container{
+    h2{
+      margin: 16px;
+    }
+    .operator{
+      margin-left: 16px;
+    }
+  }
+  .content{
+    margin-top: 10px;
+    padding: 16px;
+  }
 </style>

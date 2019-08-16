@@ -10,14 +10,25 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="文章标题" prop="title">
+      <el-form-item class="title" label="文章标题" prop="title">
         <el-input v-model="form.title" placeholder="请输入文章标题"></el-input>
       </el-form-item>
 
       <div class="el-form-item is-required item-editor" :class="{ 'is-error': validate.error }">
         <label class="el-form-item__label">文章内容</label>
         <div class="el-form-item__content">
-          <div id="editor" ref="editor" :class="{'error-border': validate.error}"></div>
+          <div class="editor-wrapper">
+            <div id="editor" ref="editor" :class="{'error-border': validate.error}">
+              <el-input
+                type="textarea"
+                resize="none"
+                :rows="20"
+                placeholder="请输入markdown格式的文章正文"
+                v-model="editorContent"
+              ></el-input>
+            </div>
+            <div class="editor-preview markdown-body" ref="preview" v-html="getPreview"></div>
+          </div>
           <div v-if="validate.error" class="el-form-item__error">正文怎能没有内容呢？</div>
         </div>
       </div>
@@ -30,11 +41,10 @@
 </template>
 
 <script>
+  import 'github-markdown-css'
+  import marked from 'marked'
   import {mapState} from 'vuex'
 
-  import E from 'wangeditor'
-
-  let editor = null;
 
   export default {
     name: "create",
@@ -53,31 +63,24 @@
           category: [
             {type: 'string', required: true, message: "必须填写分类哦!", trigger: 'blur'},
           ],
-
         },
-
         validate: {
           error: false
         }
       }
     },
     computed: {
-      ...mapState(['user'])
+      ...mapState(['user']),
+      getPreview(){
+        return marked(this.editorContent)
+      }
     },
     created() {
       this.getCategories();
     },
     mounted() {
-      this.initEditor();
     },
     methods: {
-      initEditor() {
-        let editor = new E(this.$refs.editor);
-        editor.customConfig.onchange = (html) => {
-          this.editorContent = html
-        };
-        editor.create();
-      },
       getCategories() {
         const cq = new this.$api.SDK.Query('Category');
         cq.find().then((categories) => {
@@ -88,11 +91,7 @@
       },
       // 验证富文本内容
       validateContent() {
-        if (this.editorContent === ''
-            || this.editorContent === '<p><br></p>'
-            || this.editorContent === '<p>&nbsp;</p>'
-            || this.editorContent === '<p>&nbsp;</p><p><br></p>'
-        ) {
+        if (this.editorContent.trim() === '' ) {
           this.validate.error = true;
           return false
         }
@@ -145,7 +144,7 @@
           }
           if (valid) {
             let article = this.createArticle();
-            this.setACL(article)
+            this.setACL(article);
             this.save(article)
           } else {
             this.$message.error('填写错误,请按照提示修改!');
@@ -157,17 +156,23 @@
   }
 </script>
 
-<style scoped>
-  #editor {
-    border: 1px solid transparent;
+<style scoped lang="scss">
+  .item-editor { position: relative; z-index: 200; }
+  #editor { border: 1px solid transparent; }
+  #editor.error-border { border: 1px solid red; }
+  .editor-wrapper{
+    display: flex;
+    > div{
+      flex: 1;
+      width: 50%;
+    }
+    .editor-preview{
+      background: #f0f0f0;
+      overflow: auto;
+      height: 432px;
+      border-radius: 3px;
+      margin-left: 10px;
+    }
   }
-
-  #editor.error-border {
-    border: 1px solid red;
-  }
-
-  .item-editor {
-    position: relative;
-    z-index: 200;
-  }
+  .title{width: 30%;}
 </style>

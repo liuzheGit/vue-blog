@@ -10,14 +10,25 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="文章标题" prop="title">
+      <el-form-item class="title" label="文章标题" prop="title">
         <el-input v-model="form.title" placeholder="请输入文章标题"></el-input>
       </el-form-item>
 
       <div class="el-form-item is-required item-editor" :class="{ 'is-error': validate.error }">
         <label class="el-form-item__label">文章内容</label>
         <div class="el-form-item__content">
-          <div id="editor" ref="editor" :class="{'error-border': validate.error}"></div>
+          <div class="editor-wrapper">
+            <div id="editor" ref="editor" :class="{'error-border': validate.error}">
+              <el-input
+                type="textarea"
+                resize="none"
+                :rows="20"
+                placeholder="请输入markdown格式的文章正文"
+                v-model="editorContent"
+              ></el-input>
+            </div>
+            <div class="editor-preview markdown-body" ref="preview" v-html="getPreview"></div>
+          </div>
           <div v-if="validate.error" class="el-form-item__error">正文怎能没有内容呢？</div>
         </div>
       </div>
@@ -29,10 +40,10 @@
 </template>
 
 <script>
+  import 'github-markdown-css'
+  import marked from 'marked'
   import {mapState} from 'vuex'
-  import E from 'wangeditor'
 
-  let editor = null;
   export default {
     name: "edit",
     data() {
@@ -63,30 +74,19 @@
       this.getArticle()
     },
     mounted(){
-      this.initEditor();
     },
     computed:{
-      ...mapState(['user'])
+      ...mapState(['user']),
+      getPreview(){
+        return marked(this.editorContent)
+      }
     },
     methods: {
-      initEditor(){
-        editor = new E(this.$refs.editor);
-        editor.customConfig.onchange = (html) => {
-          this.editorContent = html
-        };
-        editor.create();
-      },
       getCategory(){
         const cq = new this.$api.SDK.Query('Category');
         cq.find().then((categories)=>{
           this.categories = categories
         }).catch(err=>console.log(err))
-      },
-      getContent(){
-        return editor.txt.html();
-      },
-      setContent(html){
-        return editor.txt.html(html)
       },
       getArticle(){
         const id = this.$route.params.id;
@@ -94,40 +94,15 @@
         q.include('category');
         q.get(id).then((article) => {
           this.article = article;
-
           this.form.title = article.get('title');
           this.form.category = article.get('category');
-
-          this.wait(editor).then(() =>{
-            this.setContent(article.get('content'))
-          });
-
+          this.editorContent = article.get('content')
           this.$Progress.finish()
-        })
-      },
-      wait(flag){
-        console.log('这里是一个promise')
-        return new Promise((resolve,reject)=>{
-          let timer = null;
-          if(flag){
-            resolve()
-          }else {
-            timer = setInterval(()=>{
-              if(!flag) {return;}
-              resolve();
-              clearInterval(timer)
-            },500)
-          }
         })
       },
       // 验证富文本内容
       validateContent(){
-        let editorContent = this.getContent();
-        if( editorContent === ''
-            || editorContent === '<p><br></p>'
-            || editorContent === '<p>&nbsp;</p>'
-            || editorContent === '<p>&nbsp;</p><p><br></p>'
-        ){
+        if( this.editorContent.trim() === '' ){
           this.validate.error = true;
           return false;
         }
@@ -138,7 +113,7 @@
         const article = this.article;
         article.set('author', this.user);
         article.set('title', this.form.title);
-        article.set('content', this.getContent());
+        article.set('content', this.editorContent);
         article.set('category', this.form.category);
         return article;
       },
@@ -166,14 +141,22 @@
 </script>
 
 <style scoped lang="scss">
-  #editor{
-    border: 1px solid transparent;
+  .item-editor{ position: relative; z-index: 200; }
+  #editor{ border: 1px solid transparent; }
+  #editor.error-border{ border: 1px solid red; }
+  .editor-wrapper{
+    display: flex;
+    > div{
+      flex: 1;
+      width: 50%;
+    }
+    .editor-preview{
+      background: #f0f0f0;
+      overflow: auto;
+      height: 432px;
+      border-radius: 3px;
+      margin-left: 10px;
+    }
   }
-  #editor.error-border{
-    border: 1px solid red;
-  }
-  .item-editor{
-    position: relative;
-    z-index: 200;
-  }
+  .title{width: 30%;}
 </style>

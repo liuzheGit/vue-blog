@@ -6,11 +6,9 @@ import '@/assets/global.css'
 
 // 路由限制
 router.beforeEach((to, from, next)=>{
-  // console.log('路由限制是')
-  // console.log(to)
   if(to.matched.some(record => record.meta.needLogin)){
     if(!store.state.user){
-      Vue.prototype.$message.error('请先登录')
+      Vue.prototype.$message.error('请先登录');
       next({
         path: '/signIn'
       })
@@ -46,26 +44,24 @@ const VueProgressBaroptions = {
   autoRevert: true,
   location: 'top',
   inverse: false
-}
-
+};
 Vue.use(VueProgressBar, VueProgressBaroptions)
 
-
 const user = api.SDK.User.current();
-
 if(user) {
   store.commit('setUser', user)
 }
 
+// 注入 leanCloud api
 Vue.mixin({
   beforeCreate(){
     if(api && !this.$api){
       this.$api = api
     }
   }
-})
+});
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 const app = new Vue({
   router,
